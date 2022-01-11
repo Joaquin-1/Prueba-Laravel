@@ -45,6 +45,7 @@ Route::post('/depart', [DepartController::class, 'store'])
 Route::get('/depart/{id}/edit', [DepartController::class, 'edit']);
 Route::put('/depart/{id}', [DepartController::class, 'update'])
     ->name('depart.update');
+Route::delete('/depart/{id}', [DepartController::class, 'destroy']);
 
 Route::get('/emple', [EmpleController::class, 'index']);
 Route::get('/emple/create', [EmpleController::class, 'create']);

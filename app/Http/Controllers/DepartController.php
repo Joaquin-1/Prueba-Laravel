@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Depart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +25,7 @@ class DepartController extends Controller
             $departs->where('localidad', 'ilike', "%$localidad%");
         }
 
-        $paginador = $departs->paginate(2);
+        $paginador = $departs->paginate(4);
         $paginador->appends(compact(
             'denominacion',
             'localidad',
@@ -38,10 +39,8 @@ class DepartController extends Controller
 
     public function create()
     {
-        $departamento = (object) [
-            'denominacion' => null,
-            'localidad' => null,
-        ];
+
+        $departamento = new Depart();
 
         return view('depart.create', [
             'departamento' => $departamento,
@@ -52,10 +51,10 @@ class DepartController extends Controller
     {
         $validados = $this->validar();
 
-        DB::table('depart')->insert([
-            'denominacion' => $validados['denominacion'],
-            'localidad' => $validados['localidad'],
-        ]);
+        $departamento = new Depart();
+        $departamento->denominacion = $validados['denominacion'];
+        $departamento->localidad = $validados['localidad'];
+        $departamento->save();
 
         return redirect('/depart')
             ->with('success', 'Departamento insertado con éxito.');
@@ -63,7 +62,7 @@ class DepartController extends Controller
 
     public function edit($id)
     {
-        $departamento = $this->findDepartamento($id);
+        $departamento = Depart::findOrFail($id);
 
         return view('depart.edit', [
             'departamento' => $departamento,
@@ -73,14 +72,10 @@ class DepartController extends Controller
     public function update($id)
     {
         $validados = $this->validar();
-        $this->findDepartamento($id);
-
-        DB::table('depart')
-            ->where('id', $id)
-            ->update([
-            'denominacion' => $validados['denominacion'],
-            'localidad' => $validados['localidad'],
-        ]);
+        $departamento = Depart::findOrFail($id);
+        $departamento->denominacion = $validados['denominacion'];
+        $departamento->localidad = $validados['localidad'];
+        $departamento->save();
 
         return redirect('/depart')
             ->with('success', 'Departamento modificado con éxito.');
@@ -95,6 +90,19 @@ class DepartController extends Controller
 
         return $validados;
     }
+
+    public function destroy($id)
+    {
+        $departamento = Depart::findOrFail($id);
+        
+        $departamento->delete();
+
+        
+
+        return redirect()->back()
+            ->with('success', 'Alumno borrado correctamente');
+    }
+
 
     private function findDepartamento($id)
     {

@@ -45,8 +45,11 @@
                                     class="px-4 py-1 text-sm text-white bg-blue-400 rounded">Editar</a>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="#"
-                                    class="px-4 py-1 text-sm text-white bg-red-400 rounded">Borrar</a>
+                                <form action="/depart/{{ $depart->id }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button onclick="return confirm('¿Seguro?')" class="px-4 py-1 text-sm text-white bg-red-400 rounded" type="submit">Borrar</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
